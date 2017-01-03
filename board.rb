@@ -4,6 +4,8 @@ require_all 'pieces'
 require_relative 'chess_exception'
 
 class Board
+  PIECE_ROW = [Rook, Knight, Bishop, Queen, King, Bishop, Knight, Rook]
+
   def initialize
     @grid = Array.new(8) { Array.new(8) }
     setup_board
@@ -81,44 +83,16 @@ class Board
   end
 
   def setup_board
-    setup_kings
-    setup_queens
-    setup_bishops
-    setup_knights
-    setup_rooks
+    setup_pieces(0, :black)
+    setup_pieces(7, :white)
     setup_pawns
     setup_null
   end
 
-  def setup_kings
-    self[[0,4]] = King.new(self, [0,4], :black)
-    self[[7,4]] = King.new(self, [7,4], :white)
-  end
-
-  def setup_queens
-    self[[0,3]] = Queen.new(self, [0,3], :black)
-    self[[7,3]] = Queen.new(self, [7,3], :white)
-  end
-
-  def setup_bishops
-    self[[0,2]] = Bishop.new(self, [0,2], :black)
-    self[[0,5]] = Bishop.new(self, [0,5], :black)
-    self[[7,2]] = Bishop.new(self, [7,2], :white)
-    self[[7,5]] = Bishop.new(self, [7,5], :white)
-  end
-
-  def setup_knights
-    self[[0,1]] = Knight.new(self, [0,1], :black)
-    self[[0,6]] = Knight.new(self, [0,6], :black)
-    self[[7,1]] = Knight.new(self, [7,1], :white)
-    self[[7,6]] = Knight.new(self, [7,6], :white)
-  end
-
-  def setup_rooks
-    self[[0,0]] = Rook.new(self, [0,0], :black)
-    self[[0,7]] = Rook.new(self, [0,7], :black)
-    self[[7,0]] = Rook.new(self, [7,0], :white)
-    self[[7,7]] = Rook.new(self, [7,7], :white)
+  def setup_pieces(rank, color)
+    PIECE_ROW.each_with_index do |klass, file|
+      self[[rank, file]] = klass.new(self, [rank, file], color)
+    end
   end
 
   def setup_pawns
