@@ -11,6 +11,17 @@ class Display
     @cursor = Cursor.new([0,0], board)
   end
 
+  def get_move
+    positions = []
+    until positions.length == 2
+      render
+      input = cursor.get_input
+      positions << input unless input.nil?
+      system "clear"
+    end
+    positions
+  end
+
   def interact
     while true
       render

@@ -82,6 +82,7 @@ class Cursor
     when :left, :right, :up, :down
       diff = MOVES[key]
       update_pos(diff)
+      nil
     when :ctrl_c
       Process.exit(0)
     end

@@ -1,6 +1,7 @@
 require 'byebug'
 require 'require_all'
 require_all 'pieces'
+require_relative 'chess_exception'
 
 class Board
   def initialize
@@ -28,7 +29,7 @@ class Board
     if self[start_pos].valid_moves.include?(end_pos)
       move_piece!(start_pos, end_pos)
     else
-      raise StandardError.new("Not a valid move!")
+      raise ChessException.new("Not a valid move!")
     end
   end
 
@@ -63,6 +64,10 @@ class Board
     in_check?(color) && grid.flatten.none? do |piece|
       piece.valid_moves.any? && piece.color == color
     end
+  end
+
+  def over?
+    checkmate?(:white) || checkmate?(:black)
   end
 
   protected

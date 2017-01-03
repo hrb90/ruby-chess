@@ -1,0 +1,2 @@
+class ChessException < StandardError
+end
