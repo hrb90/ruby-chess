@@ -36,11 +36,16 @@ class Game
   def take_turn
     player = players[curr_player]
     begin
-      start_pos, end_pos = player.get_move
-      unless board[start_pos].color == curr_player
-        raise WrongColorException.new("Oops, wrong color!")
+      move = player.get_move
+      if [:kingside, :queenside].include?(move)
+        board.castle(move, curr_player)
+      else
+        start_pos, end_pos = move
+        unless board[start_pos].color == curr_player
+          raise WrongColorException.new("Oops, wrong color!")
+        end
+        board.move_piece(start_pos, end_pos)
       end
-      board.move_piece(start_pos, end_pos)
     rescue ChessException => e
       player.alert_error(e.message)
       retry

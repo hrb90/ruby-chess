@@ -17,6 +17,7 @@ class Display
     until positions.length == 2
       render
       input = cursor.get_input
+      return input if is_castle?(input)
       unless input.nil?
         positions << input
         @highlighted = true
@@ -28,6 +29,8 @@ class Display
   end
 
   def render
+    puts "Return to select a start and ending position"
+    puts "K to castle kingside, Q to castle queenside"
     (0..7).each do |rank|
       render_rank = ""
       (0..7).each do |file|
@@ -50,5 +53,9 @@ class Display
     else
       return :green
     end
+  end
+
+  def is_castle?(input)
+    [:kingside, :queenside].include?(input)
   end
 end

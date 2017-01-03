@@ -2,10 +2,8 @@ require "io/console"
 
 KEYMAP = {
   " " => :space,
-  "h" => :left,
-  "j" => :down,
-  "k" => :up,
-  "l" => :right,
+  "q" => :queenside,
+  "k" => :kingside,
   "w" => :up,
   "a" => :left,
   "s" => :down,
@@ -79,6 +77,8 @@ class Cursor
     case key
     when :return, :space
       cursor_pos
+    when :kingside, :queenside
+      key
     when :left, :right, :up, :down
       diff = MOVES[key]
       update_pos(diff)

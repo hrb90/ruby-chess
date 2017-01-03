@@ -25,6 +25,7 @@ class Board
   def move_piece(start_pos, end_pos)
     if self[start_pos].valid_moves.include?(end_pos)
       move_piece!(start_pos, end_pos)
+      update_castling_data
     else
       raise ChessException.new("Not a valid move!")
     end
@@ -35,11 +36,7 @@ class Board
   end
 
   def in_check?(color)
-    king_pos = find_king(color)
-
-    grid.flatten.any? do |piece|
-      piece.moves.include?(king_pos) && piece.color != color
-    end
+    is_threatened?(find_king(color), color)
   end
 
   def dup
@@ -61,6 +58,24 @@ class Board
     checkmate?(:white) || checkmate?(:black)
   end
 
+  def castle(side, color)
+    raise ChessException.new("Can't castle!") unless can_castle(side, color)
+    rank = color == :white ? 7 : 0
+    if side == :queenside
+      move_piece!([rank, 4], [rank, 2])
+      move_piece!([rank, 0], [rank, 3])
+    else
+      move_piece!([rank, 4], [rank, 6])
+      move_piece!([rank, 7], [rank, 5])
+    end
+  end
+
+  def can_castle(side, color)
+    pieces_can_castle(side, color) &&
+     castling_spaces_empty(side, color) &&
+     castling_spaces_unthreatened(side, color)
+  end
+
   protected
 
   attr_accessor :grid
@@ -76,10 +91,62 @@ class Board
     grid.flatten.find { |piece| piece.is_a?(King) && piece.color == color }.pos
   end
 
+  def is_threatened?(pos, color)
+    grid.flatten.any? do |piece|
+      piece.moves.include?(pos) && piece.color != color
+    end
+  end
+
   def dup_piece(piece, new_board)
     return piece if piece.empty?
 
     piece.class.new(new_board, piece.pos, piece.color)
+  end
+
+  def init_castling_data
+    @king_can_castle = {
+      white: true,
+      black: true
+    }
+    @rook_can_castle = {
+      white: {
+        queenside: true,
+        kingside: true
+      },
+      black: {
+        queenside: true,
+        kingside: true
+      }
+    }
+  end
+
+  def update_castling_data
+    [:white, :black].each do |color|
+      rank = color == :white ? 7 : 0
+      @king_can_castle[color] = false unless self[[rank, 4]].is_a?(King)
+      [:queenside, :kingside].each do |side|
+        file = side == :kingside ? 7 : 0
+        unless self[[rank, file]].is_a?(Rook) && self[[rank, file]].color == color
+          @rook_can_castle[color][side] = false
+        end
+      end
+    end
+  end
+
+  def pieces_can_castle(side, color)
+    @king_can_castle[color] && @rook_can_castle[color][side]
+  end
+
+  def castling_spaces_empty(side, color)
+    rank = color == :white ? 7 : 0
+    files = side == :kingside ? [5, 6] : [1, 2, 3]
+    files.all? { |file| self[[rank, file]].empty? }
+  end
+
+  def castling_spaces_unthreatened(side, color)
+    rank = color == :white ? 7 : 0
+    files = side == :kingside ? [5, 6] : [2, 3]
+    files.none? { |file| is_threatened?([rank, file], color) }
   end
 
   def setup_board
@@ -87,6 +154,7 @@ class Board
     setup_pieces(7, :white)
     setup_pawns
     setup_null
+    init_castling_data
   end
 
   def setup_pieces(rank, color)
