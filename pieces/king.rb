@@ -7,7 +7,7 @@ class King < Piece
   protected
 
   def symbol
-    "K"
+    "♔"
   end
 
   private

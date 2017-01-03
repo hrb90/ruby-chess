@@ -7,7 +7,7 @@ class Bishop < Piece
   protected
 
   def symbol
-    "B"
+    "♗"
   end
 
   private

@@ -26,7 +26,7 @@ class Pawn < Piece
   protected
 
   def symbol
-    "P"
+    "♙"
   end
 
   private
