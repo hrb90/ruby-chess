@@ -17,12 +17,12 @@ class Board
   end
 
   def move_piece(start_pos, end_pos)
-    unless self[start_pos].empty?
+    if self[start_pos].moves.include?(end_pos)
       self[start_pos].set_pos(end_pos)
       self[end_pos].set_pos(nil) unless self[end_pos].empty?
       self[end_pos], self[start_pos] = self[start_pos], NullPiece.instance
     else
-      raise StandardError.new("Oops, there's no piece there!")
+      raise StandardError.new("Not allowed!")
     end
   end
 

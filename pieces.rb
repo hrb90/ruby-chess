@@ -54,7 +54,7 @@ class NullPiece < Piece
 end
 
 module Movable
-  def update_pos(pos, direction)
+  def add_direction(pos, direction)
     r, f = pos
     dr, df = direction
     [r + dr, f + df]
@@ -67,7 +67,7 @@ module Slidable
   def moves
     moves = []
     move_dirs.each do |dir|
-      current_pos = update_pos(pos, dir)
+      current_pos = add_direction(pos, dir)
       while board.in_bounds?(current_pos)
         if board[current_pos].empty?
           moves << current_pos
@@ -77,7 +77,7 @@ module Slidable
           moves << current_pos unless board[current_pos].color == color
           break
         end
-        current_pos = update_pos(current_pos, dir)
+        current_pos = add_direction(current_pos, dir)
       end
     end
     moves
@@ -90,7 +90,7 @@ module Steppable
   def moves
     moves = []
     move_dirs.each do |dir|
-      new_pos = update_pos(pos, dir)
+      new_pos = add_direction(pos, dir)
       moves << new_pos if board.in_bounds?(new_pos) && board[new_pos].color != color
     end
     moves
@@ -210,16 +210,16 @@ class Pawn < Piece
   def moves
     moves = []
     # add the forward moves
-    push_one = update_pos(pos, forward)
+    push_one = add_direction(pos, forward)
     if board.in_bounds?(push_one) && board[push_one].empty?
       moves << push_one
-      push_two = update_pos(push_one, forward)
+      push_two = add_direction(push_one, forward)
       moves << push_two if is_unpushed? && board[push_two].empty?
     end
     # add the attacking moves
     attack_dirs.each do |attack_dir|
-      attack = update_pos(pos, attack_dir)
-        moves << attack if board.in_bounds?(attack) &&
+      attack = add_direction(pos, attack_dir)
+      moves << attack if board.in_bounds?(attack) &&
         !board[attack].empty? &&
         board[attack].color != color
     end
