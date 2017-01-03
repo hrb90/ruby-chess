@@ -1,5 +1,6 @@
 require 'byebug'
-require_relative 'pieces'
+require 'require_all'
+require_all 'pieces'
 
 class Board
   def initialize
