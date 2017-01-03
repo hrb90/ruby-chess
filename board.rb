@@ -17,11 +17,15 @@ class Board
     grid[rank][file] = val
   end
 
+  def move_piece!(start_pos, end_pos)
+    self[start_pos].set_pos(end_pos)
+    self[end_pos].set_pos(nil) unless self[end_pos].empty?
+    self[end_pos], self[start_pos] = self[start_pos], NullPiece.instance
+  end
+
   def move_piece(start_pos, end_pos)
-    if self[start_pos].moves.include?(end_pos)
-      self[start_pos].set_pos(end_pos)
-      self[end_pos].set_pos(nil) unless self[end_pos].empty?
-      self[end_pos], self[start_pos] = self[start_pos], NullPiece.instance
+    if self[start_pos].valid_moves.include?(end_pos)
+      move_piece!(start_pos, end_pos)
     else
       raise StandardError.new("Not a valid move!")
     end
@@ -39,15 +43,32 @@ class Board
     end
   end
 
-  # def checkmate?(color)
-  #   in_check?(color) && grid.flatten.none? do |piece|
-  #     piece.valid_moves.any?
-  #   end
-  # end
+  def dup
+    new_board = Board.new
+    new_grid = grid.map do |rank|
+      rank.map { |piece| dup_piece(piece, new_board) }
+    end
+    new_board.grid = new_grid
+    new_board
+  end
+
+  def dup_piece(piece, new_board)
+    return piece if piece.empty?
+
+    piece.class.new(new_board, piece.pos, piece.color)
+  end
+
+  def checkmate?(color)
+    in_check?(color) && grid.flatten.none? do |piece|
+      piece.valid_moves.any? && piece.color == color
+    end
+  end
+
+  protected
+
+  attr_accessor :grid
 
   private
-
-  attr_reader :grid
 
   def find_king(color)
     grid.flatten.find { |piece| piece.is_a?(King) && piece.color == color }.pos

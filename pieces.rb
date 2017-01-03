@@ -3,7 +3,7 @@ require 'colorize'
 require 'singleton'
 
 class Piece
-  attr_reader :color
+  attr_reader :color, :pos
 
   def initialize(board, pos, color = nil)
     @board = board
@@ -23,9 +23,13 @@ class Piece
     @pos = pos
   end
 
+  def valid_moves
+    moves.reject { |end_pos| move_into_check?(end_pos) }
+  end
+
   protected
 
-  attr_reader :pos, :board
+  attr_reader :board
 
   def symbol
     "X"
@@ -51,6 +55,12 @@ class Piece
        [-1,-2],
        [-2,1],
        [-2,-1]]
+
+  def move_into_check?(end_pos)
+    dup_board = board.dup
+    dup_board.move_piece!(pos, end_pos)
+    dup_board.in_check?(color)
+  end
 end
 
 class NullPiece < Piece
