@@ -17,6 +17,9 @@ class Player
   def alert_error(msg)
     puts msg
   end
+
+  def alert_game_over
+  end
 end
 
 class HumanPlayer < Player
@@ -27,6 +30,11 @@ class HumanPlayer < Player
   def add_board(board)
     super
     @display = Display.new(board)
+  end
+
+  def alert_game_over
+    display.render
+    puts "Game over!"
   end
 
   private

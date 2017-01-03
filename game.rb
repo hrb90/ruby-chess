@@ -13,16 +13,19 @@ class Game
       black: black_player
     }
     @curr_player = :white
-    white_player.color = :white
-    white_player.add_board(board)
-    black_player.color = :black
-    black_player.add_board(board)
+    players.each do |color, player|
+      player.color = color
+      player.add_board(board)
+    end
   end
 
   def play
     until board.over?
       take_turn
       switch_players!
+    end
+    players.each do |_, player|
+      player.alert_game_over
     end
   end
 
