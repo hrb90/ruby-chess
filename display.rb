@@ -22,14 +22,6 @@ class Display
     positions
   end
 
-  def interact
-    while true
-      render
-      cursor.get_input
-      system "clear"
-    end
-  end
-
   def render
     (0..7).each do |rank|
       render_rank = ""

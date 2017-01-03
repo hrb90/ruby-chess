@@ -16,11 +16,6 @@ class Board
     grid[rank][file]
   end
 
-  def []=(pos, val)
-    rank, file = pos
-    grid[rank][file] = val
-  end
-
   def move_piece!(start_pos, end_pos)
     self[start_pos].set_pos(end_pos)
     self[end_pos].set_pos(nil) unless self[end_pos].empty?
@@ -56,12 +51,6 @@ class Board
     new_board
   end
 
-  def dup_piece(piece, new_board)
-    return piece if piece.empty?
-
-    piece.class.new(new_board, piece.pos, piece.color)
-  end
-
   def checkmate?(color)
     in_check?(color) && grid.flatten.none? do |piece|
       piece.valid_moves.any? && piece.color == color
@@ -78,8 +67,19 @@ class Board
 
   private
 
+  def []=(pos, val)
+    rank, file = pos
+    grid[rank][file] = val
+  end
+
   def find_king(color)
     grid.flatten.find { |piece| piece.is_a?(King) && piece.color == color }.pos
+  end
+
+  def dup_piece(piece, new_board)
+    return piece if piece.empty?
+
+    piece.class.new(new_board, piece.pos, piece.color)
   end
 
   def setup_board
