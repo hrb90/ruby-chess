@@ -1,3 +1,4 @@
+require 'byebug'
 require_relative 'pieces'
 
 class Board
@@ -22,7 +23,7 @@ class Board
       self[end_pos].set_pos(nil) unless self[end_pos].empty?
       self[end_pos], self[start_pos] = self[start_pos], NullPiece.instance
     else
-      raise StandardError.new("Not allowed!")
+      raise StandardError.new("Not a valid move!")
     end
   end
 
@@ -30,9 +31,27 @@ class Board
     pos.all? { |x| x >= 0 && x < 8 }
   end
 
+  def in_check?(color)
+    king_pos = find_king(color)
+
+    grid.flatten.any? do |piece|
+      piece.moves.include?(king_pos) && piece.color != color
+    end
+  end
+
+  # def checkmate?(color)
+  #   in_check?(color) && grid.flatten.none? do |piece|
+  #     piece.valid_moves.any?
+  #   end
+  # end
+
   private
 
   attr_reader :grid
+
+  def find_king(color)
+    grid.flatten.find { |piece| piece.is_a?(King) && piece.color == color }.pos
+  end
 
   def setup_board
     setup_kings

@@ -1,3 +1,4 @@
+require 'byebug'
 require 'colorize'
 require 'singleton'
 
@@ -235,7 +236,7 @@ class Pawn < Piece
   private
 
   def is_unpushed?
-    (pos[0] == 1 && color == :white) || (pos[0] == 6 && color == :black)
+    (pos[0] == 1 && color == :black) || (pos[0] == 6 && color == :white)
   end
 
   def forward_dir
