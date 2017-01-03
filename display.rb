@@ -20,11 +20,11 @@ class Display
   end
 
   def render
-    (0..7).to_a.each do |rank|
+    (0..7).each do |rank|
       render_rank = ""
-      (0..7).to_a.each do |file|
-        square = board[[rank, file]]
-        render_piece = square.to_s
+      (0..7).each do |file|
+        piece = board[[rank, file]]
+        render_piece = piece.to_s
         if [rank, file] == cursor.cursor_pos
           render_piece = render_piece.colorize(:background => :light_green)
         end

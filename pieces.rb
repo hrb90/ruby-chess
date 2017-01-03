@@ -54,9 +54,9 @@ class NullPiece < Piece
 end
 
 module Movable
-  def update_pos(pos, dir)
+  def update_pos(pos, direction)
     r, f = pos
-    dr, df = dir
+    dr, df = direction
     [r + dr, f + df]
   end
 end
@@ -72,6 +72,8 @@ module Slidable
         if board[current_pos].empty?
           moves << current_pos
         else
+          # capture if the piece on current_pos is the opposite color
+          # either way we can't slide past it
           moves << current_pos unless board[current_pos].color == color
           break
         end
