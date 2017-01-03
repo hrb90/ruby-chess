@@ -30,6 +30,27 @@ class Piece
   def symbol
     "X"
   end
+
+  private
+
+  BISHOP_DIRS = [[1,1],
+       [1,-1],
+       [-1,1],
+       [-1,-1]]
+
+  ROOK_DIRS = [[0,1],
+       [0,-1],
+       [1,0],
+       [-1,0]]
+
+  KNIGHT_DIRS = [[1,2],
+       [1,-2],
+       [2,1],
+       [2,-1],
+       [-1,2],
+       [-1,-2],
+       [-2,1],
+       [-2,-1]]
 end
 
 class NullPiece < Piece
@@ -110,10 +131,7 @@ class Rook < Piece
   private
 
   def move_dirs
-    [[0,1],
-     [0,-1],
-     [1,0],
-     [-1,0]]
+    ROOK_DIRS
   end
 end
 
@@ -129,10 +147,7 @@ class Bishop < Piece
   private
 
   def move_dirs
-    [[1,1],
-     [1,-1],
-     [-1,1],
-     [-1,-1]]
+    BISHOP_DIRS
   end
 end
 
@@ -148,14 +163,7 @@ class Queen < Piece
   private
 
   def move_dirs
-    [[0,1],
-     [0,-1],
-     [1,0],
-     [-1,0],
-     [1,1],
-     [1,-1],
-     [-1,1],
-     [-1,-1]]
+    BISHOP_DIRS + ROOK_DIRS
   end
 end
 
@@ -171,14 +179,7 @@ class Knight < Piece
   private
 
   def move_dirs
-    [[1,2],
-     [1,-2],
-     [2,1],
-     [2,-1],
-     [-1,2],
-     [-1,-2],
-     [-2,1],
-     [-2,-1]]
+    KNIGHT_DIRS
   end
 end
 
@@ -194,14 +195,7 @@ class King < Piece
   private
 
   def move_dirs
-    [[0,1],
-     [0,-1],
-     [1,0],
-     [-1,0],
-     [1,1],
-     [1,-1],
-     [-1,1],
-     [-1,-1]]
+    BISHOP_DIRS + ROOK_DIRS
   end
 end
 
