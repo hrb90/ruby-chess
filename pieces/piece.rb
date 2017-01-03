@@ -11,7 +11,7 @@ class Piece
   end
 
   def to_s
-    symbol.colorize(@color).colorize(:background => :red)
+    symbol
   end
 
   def empty?

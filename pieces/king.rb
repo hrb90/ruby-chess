@@ -7,7 +7,7 @@ class King < Piece
   protected
 
   def symbol
-    "♔"
+    color == :white ? "♔" : "♚"
   end
 
   private

@@ -9,6 +9,7 @@ class Display
   def initialize(board)
     @board = board
     @cursor = Cursor.new([0,0], board)
+    @highlighted = false
   end
 
   def get_move
@@ -16,9 +17,13 @@ class Display
     until positions.length == 2
       render
       input = cursor.get_input
-      positions << input unless input.nil?
+      unless input.nil?
+        positions << input
+        @highlighted = true
+      end
       system "clear"
     end
+    @highlighted = false
     positions
   end
 
@@ -27,13 +32,23 @@ class Display
       render_rank = ""
       (0..7).each do |file|
         piece = board[[rank, file]]
-        render_piece = piece.to_s
-        if [rank, file] == cursor.cursor_pos
-          render_piece = render_piece.colorize(:background => :light_green)
-        end
+        bg_color = get_background(rank, file)
+        render_piece = piece.to_s.colorize(:background => bg_color)
         render_rank << render_piece
       end
       puts render_rank
+    end
+  end
+
+  private
+
+  def get_background(rank, file)
+    if [rank, file] == cursor.cursor_pos
+      @highlighted ? :light_red : :red
+    elsif (rank + file) % 2 == 0
+      return :light_green
+    else
+      return :green
     end
   end
 end

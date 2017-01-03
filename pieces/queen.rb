@@ -7,7 +7,7 @@ class Queen < Piece
   protected
 
   def symbol
-    "♕"
+    color == :white ? "♕" : "♛"
   end
 
   private

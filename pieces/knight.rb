@@ -7,7 +7,7 @@ class Knight < Piece
   protected
 
   def symbol
-    "♘"
+    color == :white ? "♘" : "♞"
   end
 
   private
